@@ -7,7 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 
 const jwtModule = JwtModule.register({
-  secret: 'test123456',
+  secret: 'suibianshenme',
   signOptions: { expiresIn: '4h' },
 });
 
