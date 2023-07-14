@@ -5,10 +5,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
+import { ConfigService } from '@nestjs/config';
 
-const jwtModule = JwtModule.register({
-  secret: 'suibianshenme',
-  signOptions: { expiresIn: '4h' },
+const jwtModule = JwtModule.registerAsync({
+  inject: [ConfigService],
+  useFactory: async (configService: ConfigService) => ({
+    secret: configService.get('JWT_SECRET') ?? 'secret',
+    signOptions: {
+      expiresIn: configService.get('JWT_EXPIRES_IN') ?? '10m',
+    },
+  }),
 });
 
 @Module({
