@@ -1,10 +1,12 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -14,7 +16,7 @@ export class User {
   @Column({ name: 'account', unique: true })
   username: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @CreateDateColumn()
@@ -22,4 +24,9 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @BeforeInsert()
+  async hashPassword() {
+    if (this.password) this.password = bcrypt.hashSync(this.password, 10);
+  }
 }

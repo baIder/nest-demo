@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MenuModule } from './menu/menu.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './user/user.module';
       retryAttempts: 10,
       autoLoadEntities: true,
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
