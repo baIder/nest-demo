@@ -28,4 +28,8 @@ export class AuthService {
       type: 'Bearer',
     };
   }
+
+  async logout(user: Partial<User>) {
+    await this.redisService.del(`token_${user.id}`);
+  }
 }
