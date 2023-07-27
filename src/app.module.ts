@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './global/guard/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { RedisModule } from './db/redis/redis.module';
 import envConfig from 'config/envConfig';
 
 @Module({
@@ -35,6 +36,7 @@ import envConfig from 'config/envConfig';
       }),
     }),
     AuthModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
