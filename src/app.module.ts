@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -13,6 +13,7 @@ import envConfig from 'config/envConfig';
 import { WinstonModule } from 'nest-winston';
 import 'winston-daily-rotate-file';
 import { transports } from 'winston';
+import { LoggerMiddleware } from './global/middleware/logger/logger.middleware';
 
 @Module({
   imports: [
@@ -43,7 +44,7 @@ import { transports } from 'winston';
     WinstonModule.forRoot({
       transports: [
         new transports.DailyRotateFile({
-          dirname: `logs/%DATE%`,
+          dirname: `logs`,
           filename: `%DATE%.log`,
           datePattern: 'YYYY-MM-DD',
           zippedArchive: true,
@@ -62,4 +63,8 @@ import { transports } from 'winston';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
