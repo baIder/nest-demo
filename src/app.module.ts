@@ -10,6 +10,9 @@ import { JwtAuthGuard } from './global/guard/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { RedisModule } from './db/redis/redis.module';
 import envConfig from 'config/envConfig';
+import { WinstonModule } from 'nest-winston';
+import 'winston-daily-rotate-file';
+import { transports } from 'winston';
 
 @Module({
   imports: [
@@ -37,6 +40,18 @@ import envConfig from 'config/envConfig';
     }),
     AuthModule,
     RedisModule,
+    WinstonModule.forRoot({
+      transports: [
+        new transports.DailyRotateFile({
+          dirname: `logs/%DATE%`,
+          filename: `%DATE%.log`,
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
+          maxSize: '20m',
+          maxFiles: '14d',
+        }),
+      ],
+    }),
   ],
   controllers: [AppController],
   providers: [
