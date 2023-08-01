@@ -7,13 +7,15 @@ import { MenuModule } from './menu/menu.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './global/guard/jwt-auth.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RedisModule } from './db/redis/redis.module';
 import envConfig from 'config/envConfig';
 import { WinstonModule } from 'nest-winston';
 import 'winston-daily-rotate-file';
 import { transports } from 'winston';
 import { LoggerMiddleware } from './global/middleware/logger/logger.middleware';
+import { HttpExceptionFilter } from './global/filter/http-exception/http-exception.filter';
+import { TransformInterceptor } from './global/interceptor/transform/transform.interceptor';
 
 @Module({
   imports: [
@@ -60,6 +62,14 @@ import { LoggerMiddleware } from './global/middleware/logger/logger.middleware';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
     },
   ],
 })
