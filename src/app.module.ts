@@ -12,7 +12,7 @@ import { RedisModule } from './db/redis/redis.module';
 import envConfig from 'config/envConfig';
 import { WinstonModule } from 'nest-winston';
 import 'winston-daily-rotate-file';
-import { transports } from 'winston';
+import { format, transports } from 'winston';
 import { LoggerMiddleware } from './global/middleware/logger/logger.middleware';
 import { HttpExceptionFilter } from './global/filter/http-exception/http-exception.filter';
 import { TransformInterceptor } from './global/interceptor/transform/transform.interceptor';
@@ -52,6 +52,17 @@ import { TransformInterceptor } from './global/interceptor/transform/transform.i
           zippedArchive: true,
           maxSize: '20m',
           maxFiles: '14d',
+          format: format.combine(
+            format.timestamp({
+              format: 'YYYY-MM-DD HH:mm:ss',
+            }),
+            format.printf(
+              (info) =>
+                `${info.timestamp} [${info.level}] : ${info.message} ${
+                  Object.keys(info).length ? JSON.stringify(info, null, 2) : ''
+                }`,
+            ),
+          ),
         }),
       ],
     }),
